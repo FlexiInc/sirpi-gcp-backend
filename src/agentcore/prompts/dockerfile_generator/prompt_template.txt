@@ -1,0 +1,96 @@
+════════════════════════════════════════════════════════════════════════════════
+DOCKERFILE GENERATION REQUEST
+════════════════════════════════════════════════════════════════════════════════
+
+**Application Analysis Results:**
+Language: {language}
+Framework: {framework}
+Runtime Version: {runtime_version}
+Package Manager: {package_manager}
+Exposed Port: {exposed_port}
+Start Command: {start_command}
+Build Command: {build_command}
+Health Check Path: {health_check_path}
+Is Monorepo: {is_monorepo}
+{monorepo_note}
+
+**Key Dependencies (Top 10):**
+{dependencies}
+
+**Required Environment Variables:**
+{environment_variables}
+
+════════════════════════════════════════════════════════════════════════════════
+CRITICAL GENERATION RULES
+════════════════════════════════════════════════════════════════════════════════
+
+1. **Package Manager**: Use EXACTLY the package manager specified: {package_manager}
+   - uv: COPY pyproject.toml uv.lock* → RUN uv sync --no-dev
+   - poetry: COPY pyproject.toml poetry.lock* → RUN poetry install --no-dev
+   - pip: COPY requirements.txt → RUN pip install --no-cache-dir -r requirements.txt
+   - npm: COPY package*.json → RUN npm ci
+   - yarn: COPY package.json yarn.lock → RUN yarn install --frozen-lockfile
+   - pnpm: COPY package.json pnpm-lock.yaml → RUN pnpm install --frozen-lockfile
+
+2. **Deployment Type**: {deployment_type}
+
+3. **Monorepo Handling**: {monorepo_instruction}
+
+4. **Docker Build Context**: ALWAYS repository root
+   - Single service: COPY from repository root (COPY src/ ./src/)
+   - Monorepo: COPY with subdirectory prefix (COPY backend/src/ ./src/)
+
+5. **CMD Directive**: Use the EXACT start command: {start_command}
+   - Convert to exec form: ["command", "arg1", "arg2"]
+   - NO shell form (no shell wrapping)
+
+════════════════════════════════════════════════════════════════════════════════
+WHAT TO GENERATE
+════════════════════════════════════════════════════════════════════════════════
+
+✓ DO:
+- Generate complete, production-ready Dockerfile
+- Include ALL required directives (FROM, WORKDIR, COPY, RUN, USER, EXPOSE, HEALTHCHECK, CMD)
+- Use multi-stage build (builder + runtime)
+- Create non-root user with correct syntax for base image
+- Output raw Dockerfile content starting with FROM
+- Use {FRONTEND_BUILD_OUTPUT} placeholder for monorepo frontend builds
+
+✗ DO NOT:
+- Add markdown code fences (```)
+- Include explanatory text before or after Dockerfile
+- Add instructional comments ("Add this to your main.py")
+- Include setup guidance ("You need to configure...")
+- Add TODO or FIXME comments
+- Leave any directives commented out
+- Generate incomplete Dockerfiles
+
+════════════════════════════════════════════════════════════════════════════════
+VALIDATION CHECKLIST (Verify Before Output)
+════════════════════════════════════════════════════════════════════════════════
+
+Before outputting your Dockerfile, verify it includes:
+□ FROM instructions with specific version tags (no :latest)
+□ Multi-stage build (at least 2 stages)
+□ WORKDIR /app
+□ COPY commands with correct paths for build context
+□ Package manager commands matching {package_manager}
+□ RUN command creating non-root user (useradd or adduser)
+□ chown command giving user ownership
+□ USER appuser (before CMD)
+□ EXPOSE {exposed_port}
+□ HEALTHCHECK with path {health_check_path}
+□ CMD in exec form ["command", "args"] using {start_command}
+□ NO markdown formatting
+□ NO instructional comments
+
+════════════════════════════════════════════════════════════════════════════════
+OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Output ONLY the raw Dockerfile content. Nothing else.
+Start immediately with the first FROM instruction.
+No explanations. No markdown. No comments about setup.
+
+Generate the Dockerfile now:
+

@@ -1,0 +1,81 @@
+[project]
+name = "sirpi-google-cloudrun"
+version = "0.1.0"
+description = "AI-Native DevOps Automation Platform using Google ADK - Cloud-Agnostic"
+requires-python = ">=3.12"
+dependencies = [
+    # Core Framework
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.9",
+    "httpx>=0.27.0",
+    "sse-starlette>=2.1.0",
+    # Google ADK & AI
+    "google-adk>=1.3.0",
+    "google-genai>=1.27.0",
+    # Database
+    "psycopg2-binary>=2.9.9",
+    "sqlalchemy>=2.0.35",
+    "pg8000>=1.31.2", # Required by ADK DatabaseSessionService
+    # Authentication
+    "pyjwt[crypto]>=2.8.0",
+    # Code Execution
+    "e2b-code-interpreter>=2.1.1",
+    # Cloud Providers (cloud-agnostic)
+    "google-cloud-run>=0.10.0",
+    "google-cloud-storage>=2.18.0",
+    "google-cloud-artifact-registry>=1.12.0",
+    "google-cloud-iam>=2.15.0", # For service account creation
+    "google-cloud-resource-manager>=1.12.0", # For IAM policy management
+    "google-cloud-service-usage>=1.9.0", # For enabling APIs
+    "boto3>=1.35.0", # For AWS deployments
+    # OAuth 2.0
+    "google-auth>=2.35.0",
+    "google-auth-oauthlib>=1.2.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-api-python-client>=2.140.0",
+    # Diagrams (optional)
+    "diagrams>=0.24.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "black>=24.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "black>=24.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.black]
+line-length = 100
+target-target = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
