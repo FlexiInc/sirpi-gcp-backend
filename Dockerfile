@@ -3,11 +3,12 @@ WORKDIR /app
 RUN pip install uv
 COPY pyproject.toml uv.lock* ./
 RUN uv venv && uv sync --no-dev
+COPY . .
 
 FROM python:3.12-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/.venv ./.venv
-COPY . .
+COPY --from=builder /app .
 RUN useradd -m -u 1001 appuser && \
     chown -R appuser:appuser /app
 ENV PATH="/app/.venv/bin:$PATH"
